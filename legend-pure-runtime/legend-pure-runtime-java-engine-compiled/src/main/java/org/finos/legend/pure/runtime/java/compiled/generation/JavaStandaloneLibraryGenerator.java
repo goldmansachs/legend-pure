@@ -326,13 +326,23 @@ public class JavaStandaloneLibraryGenerator
 
     public static PureJavaCompiler compileOnly(MapIterable<? extends String, ? extends Iterable<? extends StringJavaSource>> javaSources, ListIterable<? extends StringJavaSource> externalizableSources, boolean addExternalAPI, Log log) throws PureJavaCompileException
     {
-        return compileOnly(javaSources.keyValuesView(), externalizableSources, addExternalAPI, log);
+        return compileOnly(javaSources, externalizableSources, addExternalAPI, null, log);
+    }
+
+    public static PureJavaCompiler compileOnly(MapIterable<? extends String, ? extends Iterable<? extends StringJavaSource>> javaSources, ListIterable<? extends StringJavaSource> externalizableSources, boolean addExternalAPI, Integer sourceVersion, Log log) throws PureJavaCompileException
+    {
+        return compileOnly(javaSources.keyValuesView(), externalizableSources, addExternalAPI, sourceVersion, log);
     }
 
     public static PureJavaCompiler compileOnly(Iterable<? extends Pair<? extends String, ? extends Iterable<? extends StringJavaSource>>> javaSources, ListIterable<? extends StringJavaSource> externalizableSources, boolean addExternalAPI, Log log) throws PureJavaCompileException
     {
+        return compileOnly(javaSources, externalizableSources, addExternalAPI, null, log);
+    }
+
+    public static PureJavaCompiler compileOnly(Iterable<? extends Pair<? extends String, ? extends Iterable<? extends StringJavaSource>>> javaSources, ListIterable<? extends StringJavaSource> externalizableSources, boolean addExternalAPI, Integer sourceVersion, Log log) throws PureJavaCompileException
+    {
         Compile compile = new Compile(new PureJavaCompiler(new Message("")), VoidJavaCompilerEventObserver.VOID_JAVA_COMPILER_EVENT_OBSERVER);
-        compile.compileJavaCodeForSources(javaSources, log);
+        compile.compileJavaCodeForSources(javaSources, sourceVersion, log);
         if (addExternalAPI)
         {
             compile.compileExternalizableAPI(externalizableSources);

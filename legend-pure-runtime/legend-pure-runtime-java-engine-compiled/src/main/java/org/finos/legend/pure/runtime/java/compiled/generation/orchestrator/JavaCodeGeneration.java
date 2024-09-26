@@ -138,6 +138,27 @@ public class JavaCodeGeneration
                             boolean generatePureTests,
                             Log log)
     {
+        doIt(repositories,excludedRepositories,extraRepositories,generationType, skip,addExternalAPI,externalAPIPackage,generateMetadata,useSingleDir,generateSources,generateTest,preventJavaCompilation,classesDirectory,targetDirectory,generatePureTests,null,log);
+    }
+
+    public static void doIt(Set<String> repositories,
+                            Set<String> excludedRepositories,
+                            Set<String> extraRepositories,
+                            JavaCodeGeneration.GenerationType generationType,
+                            boolean skip,
+                            boolean addExternalAPI,
+                            String externalAPIPackage,
+                            boolean generateMetadata,
+                            boolean useSingleDir,
+                            boolean generateSources,
+                            boolean generateTest,
+                            boolean preventJavaCompilation,
+                            File classesDirectory,
+                            File targetDirectory,
+                            boolean generatePureTests,
+                            Integer sourceVersion,
+                            Log log)
+    {
         // DO NOT DELETE - Needed to avoid circular calls later during static initialization
         SetIterable<String> res = JavaPackageAndImportBuilder.M3_CLASSES;
         // DO NOT DELETE - Needed to avoid circular calls later during static initialization
@@ -203,7 +224,7 @@ public class JavaCodeGeneration
             {
                 long startCompilation = System.nanoTime();
                 log.info("  Start compiling Java classes");
-                PureJavaCompiler compiler = compileJavaSources(startCompilation, generate, addExternalAPI, log);
+                PureJavaCompiler compiler = compileJavaSources(startCompilation, generate, addExternalAPI, sourceVersion, log);
                 writeJavaClassFiles(startCompilation, compiler, classesDirectory, log);
                 log.info(String.format("  Finished compiling Java classes (%.9fs)", durationSinceInSeconds(startCompilation)));
             }
@@ -421,14 +442,14 @@ public class JavaCodeGeneration
         completeStep(writeMetadataStep, writeMetadataStart, log);
     }
 
-    private static PureJavaCompiler compileJavaSources(long start, Generate generate, boolean addExternalAPI, Log log)
+    private static PureJavaCompiler compileJavaSources(long start, Generate generate, boolean addExternalAPI, Integer sourceVersion, Log log)
     {
         String compilationStep = "Pure compiled mode Java code compilation";
         long compilationStart = startStep(compilationStep, log);
         PureJavaCompiler compiler;
         try
         {
-            compiler = JavaStandaloneLibraryGenerator.compileOnly(generate.getJavaSourcesByGroup(), generate.getExternalizableSources(), addExternalAPI, log);
+            compiler = JavaStandaloneLibraryGenerator.compileOnly(generate.getJavaSourcesByGroup(), generate.getExternalizableSources(), addExternalAPI, sourceVersion, log);
         }
         catch (PureJavaCompileException e)
         {

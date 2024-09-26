@@ -60,7 +60,12 @@ public class PureJavaCompiler
 
     public MemoryClassLoader compile(Iterable<? extends JavaFileObject> javaSources) throws PureJavaCompileException
     {
-        compile(this.compiler, javaSources, this.dynamicManager);
+        return compile(javaSources, null);
+    }
+
+    public MemoryClassLoader compile(Iterable<? extends JavaFileObject> javaSources, Integer sourceVersion) throws PureJavaCompileException
+    {
+        compile(this.compiler, javaSources, this.dynamicManager, sourceVersion);
         this.globalClassLoader = new MemoryClassLoader(this.dynamicManager, this.coreClassLoader);
         return this.globalClassLoader;
     }
@@ -100,6 +105,11 @@ public class PureJavaCompiler
     public static void compile(JavaCompiler compiler, Iterable<? extends JavaFileObject> javaSources, JavaFileManager fileManager) throws PureJavaCompileException
     {
         compile(compiler, javaSources, fileManager, getClassPath(), null);
+    }
+
+    public static void compile(JavaCompiler compiler, Iterable<? extends JavaFileObject> javaSources, JavaFileManager fileManager, Integer sourceVersion) throws PureJavaCompileException
+    {
+        compile(compiler, javaSources, fileManager, getClassPath(), sourceVersion);
     }
 
     public static void compile(Iterable<? extends JavaFileObject> javaSources, JavaFileManager fileManager, String classPath, Integer sourceVersion) throws PureJavaCompileException

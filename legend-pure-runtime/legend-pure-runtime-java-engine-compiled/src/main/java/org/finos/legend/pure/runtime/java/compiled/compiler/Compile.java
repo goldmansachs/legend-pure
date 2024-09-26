@@ -40,14 +40,24 @@ public class Compile
 
     public void compileJavaCodeForSources(Iterable<? extends Pair<? extends String, ? extends Iterable<? extends StringJavaSource>>> javaSourcesByCompileGroup, Log log) throws PureJavaCompileException
     {
+        compileJavaCodeForSources(javaSourcesByCompileGroup, null, log);
+    }
+
+    public void compileJavaCodeForSources(Iterable<? extends Pair<? extends String, ? extends Iterable<? extends StringJavaSource>>> javaSourcesByCompileGroup, Integer sourceVersion, Log log) throws PureJavaCompileException
+    {
         for (Pair<? extends String, ? extends Iterable<? extends StringJavaSource>> javaSources : javaSourcesByCompileGroup)
         {
             log.info("    Compiling group " + javaSources.getOne());
-            compile(javaSources.getOne(), javaSources.getTwo(), log);
+            compile(javaSources.getOne(), javaSources.getTwo(), sourceVersion, log);
         }
     }
 
     public void compile(String compileGroup, Iterable<? extends StringJavaSource> javaSources, Log log) throws PureJavaCompileException
+    {
+        compile(compileGroup, javaSources, null, log);
+    }
+
+    public void compile(String compileGroup, Iterable<? extends StringJavaSource> javaSources, Integer sourceVersion, Log log) throws PureJavaCompileException
     {
         this.observer.startCompilingJavaFiles(compileGroup);
         MutableMap<String, StringJavaSource> javaSourcesByName = Maps.mutable.empty();
@@ -63,7 +73,7 @@ public class Compile
         log.info("      compiling " + javaSourcesByName.valuesView().size() + " sources");
         if (javaSourcesByName.notEmpty())
         {
-            this.pureJavaCompiler.compile(javaSourcesByName.valuesView());
+            this.pureJavaCompiler.compile(javaSourcesByName.valuesView(), sourceVersion);
         }
         log.info("      finished in " + ((float) (System.currentTimeMillis() - start) / 1000) + "s");
         this.observer.endCompilingJavaFiles(compileGroup);
