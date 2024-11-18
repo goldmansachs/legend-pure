@@ -30,6 +30,10 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.finos.legend.pure.m2.relational.RelationMappingShared.RELATION_MAPPING_CLASS_SOURCE;
+import static org.finos.legend.pure.m2.relational.RelationMappingShared.RELATION_MAPPING_DB_SOURCE;
+import static org.finos.legend.pure.m2.relational.RelationMappingShared.RELATION_MAPPING_FUNCTION_SOURCE;
+
 public class TestPureRuntimeClassMapping extends AbstractPureRelationalTestWithCoreCompiled
 {
     private static final String CLASS_SOURCE_ID = "classSourceId.pure";
@@ -195,7 +199,6 @@ public class TestPureRuntimeClassMapping extends AbstractPureRelationalTestWithC
     {
         for (Pair<String, String> source : sources.keyValuesView())
         {
-//            System.out.println("Deleting " + source.getOne());
             new RuntimeTestScriptBuilder().createInMemorySources(sources)
                     .createInMemorySource("functionSourceId.pure", testFunctionSource)
                     .compile().run(runtime, functionExecution);
@@ -450,7 +453,8 @@ public class TestPureRuntimeClassMapping extends AbstractPureRelationalTestWithC
                         "    Person: Relational\n" +
                         "    {\n" +
                         "        name : [db]employeeAddressView.employeeName,\n" +
-                        "         addressLine1 : [db]employeeAddressView.addressLine" +
+                        "         addressLine1 : [db]employeeAddressView.addressLine," +
+                        "         +addressLine1 : String[1] : [db]employeeAddressView.addressLine" +
                         "    }\n" +
                         "    Firm: Relational\n" +
                         "    {\n" +
@@ -508,6 +512,86 @@ public class TestPureRuntimeClassMapping extends AbstractPureRelationalTestWithC
                         .createInMemorySource("modelProductTemporal.pure", modelProductTemporal)
                         .compile(),
                 runtime, functionExecution, this.getAdditionalVerifiers());
+    }
+
+    @Test
+    public void testDeleteAndReloadEachSourceWithRelationMapping()
+    {
+        String mappingSource = "###Mapping\n" +
+                "Mapping my::testMapping\n" +
+                "(\n" +
+                "  *my::Person[person]: Relation\n" +
+                "  {\n" +
+                "    ~func my::personFunction__Relation_1_\n" +
+                "    firstName: FIRSTNAME,\n" +
+                "    age: AGE\n" +
+                "  }\n" +
+                "  *my::Firm[firm]: Relation\n" +
+                "  {\n" +
+                "    ~func my::firmFunction__Relation_1_\n" +
+                "    id: ID,\n" +
+                "    legalName: LEGALNAME\n" +
+                "  }\n" +
+                ")\n";
+
+        this.testDeleteAndReloadEachSource(Maps.immutable.of("1.pure", RELATION_MAPPING_CLASS_SOURCE,
+                "2.pure", RELATION_MAPPING_DB_SOURCE,
+                "3.pure", RELATION_MAPPING_FUNCTION_SOURCE,
+                "4.pure", mappingSource),
+                "###Pure\n function test():Boolean[1]{assert(1 == my::testMapping.classMappings->size(), |'');}");
+    }
+
+    @Test
+    public void testDeleteAndReloadEachSourceWithRelationMappingContainingLocalProperty()
+    {
+        String mappingSource = "###Mapping\n" +
+                "Mapping my::testMapping\n" +
+                "(\n" +
+                "  *my::Firm[firm]: Relation\n" +
+                "  {\n" +
+                "    ~func my::firmFunction__Relation_1_\n" +
+                "    id: ID,\n" +
+                "    +firmName: String[1]: LEGALNAME\n" +
+                "  }\n" +
+                ")\n";
+
+        this.testDeleteAndReloadEachSource(Maps.immutable.of("1.pure", RELATION_MAPPING_CLASS_SOURCE,
+                "2.pure", RELATION_MAPPING_DB_SOURCE,
+                "3.pure", RELATION_MAPPING_FUNCTION_SOURCE,
+                "4.pure", mappingSource),
+                "###Pure\n function test():Boolean[1]{assert(1 == my::testMapping.classMappings->size(), |'');}");
+    }
+
+    @Test
+    public void testDeleteAndReloadEachSourceWithMixedMappings()
+    {
+        String mappingSource = "###Mapping\n" +
+                "Mapping my::testMapping\n" +
+                "(\n" +
+                "  *my::Person[person]: Relation\n" +
+                "  {\n" +
+                "    ~func my::personFunction__Relation_1_\n" +
+                "    firstName: FIRSTNAME,\n" +
+                "    age: AGE,\n" +
+                "    firmId: FIRMID\n" +
+                "  }\n" +
+                "  *my::Firm[firm]: Relational\n" +
+                "  {\n" +
+                "    id: [my::DB]firmTable.ID,\n" +
+                "    legalName: [my::DB]firmTable.LEGALNAME\n" +
+                "  }\n" +
+                "  my::Person_Firm: XStore\n" +
+                "  {\n" +
+                "    employees[firm, person]: $this.id == $that.firmId,\n" +
+                "    firm[person, firm]: $this.firmId == $that.id\n" +
+                "  }\n" +
+                ")\n";
+
+        this.testDeleteAndReloadEachSource(Maps.immutable.of("1.pure", RELATION_MAPPING_CLASS_SOURCE,
+                "2.pure", RELATION_MAPPING_DB_SOURCE,
+                "3.pure", RELATION_MAPPING_FUNCTION_SOURCE,
+                "4.pure", mappingSource),
+                "###Pure\n function test():Boolean[1]{assert(1 == my::testMapping.classMappings->size(), |'');}");
     }
 
     private CoreInstance getPropertyMapping(RelationalGraphWalker graphWalker, String mappingName, String className, String attributeName)

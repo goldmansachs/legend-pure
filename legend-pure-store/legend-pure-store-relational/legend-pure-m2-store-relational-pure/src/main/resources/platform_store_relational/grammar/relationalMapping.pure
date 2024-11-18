@@ -84,3 +84,13 @@ Class <<doc.deprecated>> meta::relational::mapping::SemiStructuredEmbeddedRelati
 Class meta::relational::mapping::SemiStructuredRelationalInstanceSetImplementation extends RootRelationalInstanceSetImplementation
 {
 }
+
+Class meta::relational::mapping::RelationExpressionInstanceSetImplementation extends RelationalInstanceSetImplementation
+{
+  relationFunction: FunctionDefinition<Any>[1];
+  isRelationFunctionRouted: Boolean[1];
+}
+
+Class meta::relational::mapping::RelationExpressionPropertyMapping extends RelationalPropertyMapping
+{
+}

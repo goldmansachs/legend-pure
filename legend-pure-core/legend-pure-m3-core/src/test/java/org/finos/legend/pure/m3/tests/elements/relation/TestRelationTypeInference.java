@@ -14,12 +14,20 @@
 
 package org.finos.legend.pure.m3.tests.elements.relation;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
 import org.finos.legend.pure.m3.tests.AbstractPureTestWithCoreCompiledPlatform;
 import org.finos.legend.pure.m4.exception.PureCompilationException;
+import org.finos.legend.pure.m3.tests.RuntimeTestScriptBuilder;
+import org.finos.legend.pure.m3.tests.RuntimeVerifier;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestRelationTypeInference extends AbstractPureTestWithCoreCompiledPlatform
@@ -751,4 +759,44 @@ public class TestRelationTypeInference extends AbstractPureTestWithCoreCompiledP
         runtime.compile();
     }
 
+    public void testDeleteAndReloadEachSource(ImmutableMap<String, String> sources, String testFunctionSource)
+    {
+        for (Pair<String, String> source : sources.keyValuesView())
+        {
+            new RuntimeTestScriptBuilder().createInMemorySources(sources)
+                    .createInMemorySource("functionSourceId.pure", testFunctionSource)
+                    .compile().run(runtime, functionExecution);
+
+            RuntimeVerifier.deleteCompileAndReloadMultipleTimesIsStable(runtime, functionExecution,
+                    Lists.fixedSize.of(source), this.getAdditionalVerifiers());
+
+            //reset so that the next iteration has a clean environment
+            setUpRuntime();
+        }
+    }
+
+    @Test
+    @Ignore
+    // Bug in type inference, potentially due to incomplete unbind.
+    public void testRelationTypeInferenceIntegrity()
+    {
+        String functionSource = "import meta::pure::metamodel::relation::*;" +
+                                "function f(t:Relation<(value:Integer,str:String)>[1]):Relation<Any>[1]\n" +
+                                "{\n" +
+                                "    $t->test(~[value, str])\n" +
+                                "}";
+        String nativeFunctionSource = "import meta::pure::metamodel::relation::*;" +
+                                      "native function test<T,X>(x:Relation<X>[1], rel:ColSpecArray<T⊆X>[1]):Relation<T>[1];";
+        
+        ImmutableMap<String, String> sources = Maps.immutable.of("1.pure", functionSource, "2.pure", nativeFunctionSource);
+        
+        new RuntimeTestScriptBuilder().createInMemorySources(sources).compile().run(runtime, functionExecution);
+
+        RuntimeVerifier.deleteCompileAndReloadMultipleTimesIsStable(
+            runtime, 
+            functionExecution,
+            Lists.fixedSize.of(Tuples.pair("2.pure", nativeFunctionSource)), 
+            this.getAdditionalVerifiers()
+        );
+    }
 }

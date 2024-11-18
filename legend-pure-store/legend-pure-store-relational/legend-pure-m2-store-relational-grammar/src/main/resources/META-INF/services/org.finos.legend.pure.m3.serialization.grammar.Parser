@@ -1,1 +1,2 @@
 org.finos.legend.pure.m2.relational.serialization.grammar.v1.RelationalParser
+org.finos.legend.pure.m2.relational.serialization.grammar.v1.RelationMappingParser

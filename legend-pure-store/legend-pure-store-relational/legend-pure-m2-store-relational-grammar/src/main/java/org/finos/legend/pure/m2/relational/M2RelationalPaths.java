@@ -38,6 +38,10 @@ public class M2RelationalPaths
     public static final String RelationalOperationElementWithJoin = "meta::relational::metamodel::RelationalOperationElementWithJoin";
     public static final String RelationalPropertyMapping = "meta::relational::mapping::RelationalPropertyMapping";
     public static final String RootRelationalInstanceSetImplementation = "meta::relational::mapping::RootRelationalInstanceSetImplementation";
+    public static final String RelationExpression = "meta::relational::metamodel::RelationExpression";
+    public static final String RelationExpressionColumn = "meta::relational::metamodel::RelationExpressionColumn";
+    public static final String RelationExpressionPropertyMapping = "meta::relational::mapping::RelationExpressionPropertyMapping";
+    public static final String RelationExpressionInstanceSetImplementation = "meta::relational::mapping::RelationExpressionInstanceSetImplementation";
     public static final String Schema = "meta::relational::metamodel::Schema";
     public static final String Table = "meta::relational::metamodel::relation::Table";
     public static final String TableAlias = "meta::relational::metamodel::TableAlias";
@@ -48,4 +52,24 @@ public class M2RelationalPaths
     public static final String NamedRelation = "meta::relational::metamodel::relation::NamedRelation";
     public static final String RelationalMappingSpecification = "meta::relational::metamodel::RelationalMappingSpecification";
     public static final String SQLNull = "meta::relational::metamodel::SQLNull";
+    public static final String BigInt = "meta::relational::metamodel::datatype::BigInt";
+    public static final String SmallInt = "meta::relational::metamodel::datatype::SmallInt";
+    public static final String TinyInt = "meta::relational::metamodel::datatype::TinyInt";
+    public static final String Integer = "meta::relational::metamodel::datatype::Integer";
+    public static final String Float = "meta::relational::metamodel::datatype::Float";
+    public static final String Double = "meta::relational::metamodel::datatype::Double";
+    public static final String Varchar = "meta::relational::metamodel::datatype::Varchar";
+    public static final String Char = "meta::relational::metamodel::datatype::Char";
+    public static final String Varbinary = "meta::relational::metamodel::datatype::Varbinary";
+    public static final String Decimal = "meta::relational::metamodel::datatype::Decimal";
+    public static final String Numeric = "meta::relational::metamodel::datatype::Numeric";
+    public static final String Timestamp = "meta::relational::metamodel::datatype::Timestamp";
+    public static final String Date = "meta::relational::metamodel::datatype::Date";
+    public static final String Distinct = "meta::relational::metamodel::datatype::Distinct";
+    public static final String Other = "meta::relational::metamodel::datatype::Other";
+    public static final String Bit = "meta::relational::metamodel::datatype::Bit";
+    public static final String Binary = "meta::relational::metamodel::datatype::Binary";
+    public static final String Real = "meta::relational::metamodel::datatype::Real";
+    public static final String Array = "meta::relational::metamodel::datatype::Array";
+    public static final String SemiStructured = "meta::relational::metamodel::datatype::SemiStructured";
 }

@@ -350,6 +350,16 @@ Class meta::relational::metamodel::RelationalOperationElementWithJoin extends me
     joinTreeNode : JoinTreeNode[0..1];
 }
 
+Class meta::relational::metamodel::RelationExpressionColumn extends Column
+{
+  column: meta::pure::metamodel::relation::Column<Nil,Any|*>[1];
+}
+
+Class meta::relational::metamodel::RelationExpression extends Relation
+{
+  owner: RelationExpressionInstanceSetImplementation[1];
+}
+
 Class meta::relational::metamodel::datatype::BigInt extends meta::relational::metamodel::datatype::CoreDataType
 {
 }
@@ -444,7 +454,6 @@ meta::relational::metamodel::datatype::Json extends meta::relational::metamodel:
 {
 }
 
-
 Class meta::relational::metamodel::Literal extends meta::relational::metamodel::RelationalOperationElement
 {
    <<equality.Key>> value:Any[1];
@@ -454,13 +463,6 @@ Class meta::relational::metamodel::LiteralList extends meta::relational::metamod
 {
    <<equality.Key>> values:Literal[*];
 }
-
-
-
-
-
-
-
 
 Class meta::relational::metamodel::SQLNull
 {
