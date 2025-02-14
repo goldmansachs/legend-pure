@@ -35,6 +35,7 @@
         <module>legend-pure-maven</module>
         <module>legend-pure-runtime</module>
         <module>legend-pure-store</module>
+        <module>legend-pure-aggregate-report</module>
     </modules>
 
     <properties>
@@ -83,6 +84,7 @@
         <build-helper.maven.plugin.version>1.9.1</build-helper.maven.plugin.version>
         <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.10</jacoco.maven.plugin.version>
+        <groovy.maven.plugin.version>2.1.1</groovy.maven.plugin.version>
         <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
         <maven.checkstyle.plugin.version>3.3.0</maven.checkstyle.plugin.version>
         <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
@@ -214,6 +216,11 @@
                     <groupId>org.finos.legend.pure</groupId>
                     <artifactId>legend-pure-maven-generation-pct</artifactId>
                     <version>${project.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
+                    <version>${groovy.maven.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
